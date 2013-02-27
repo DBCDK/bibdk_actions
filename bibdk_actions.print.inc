@@ -36,3 +36,13 @@ function bibdk_actions_print_items($form_id, &$form_state){
     dpm($pid);
   }
 }
+
+function bibdk_actions_print_page($ids){
+  $ids = explode(',', $ids);
+  $view = "";
+  $manifestations = bibdk_actions_get_manifestations($ids);
+  foreach($manifestations as $manifestation){
+    $view .= ting_openformat_manifestation_view($manifestation, 'full');
+  }
+  echo $view;
+}
