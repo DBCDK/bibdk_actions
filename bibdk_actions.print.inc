@@ -36,5 +36,7 @@ function bibdk_actions_print_page($ids){
   foreach($manifestations as $manifestation){
     $view .= ting_openformat_manifestation_view($manifestation, 'full');
   }
-  echo $view;
+  drupal_add_js(drupal_get_path('module', 'bibdk_actions') . '/js/bibdk_actions.js');
+  drupal_add_css(drupal_get_path('module', 'bibdk_actions') . '/css/bibdk_actions.css', array('media' => 'print'));
+  return $view;
 }

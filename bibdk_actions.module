@@ -11,7 +11,8 @@ function bibdk_actions_menu(){
     'title' => '',
     'page callback' => 'bibdk_actions_print_page',
     'page arguments' => array(2),
-    'access arguments' => TRUE,
+    'access arguments' => array('access content'),
+    'file' => 'bibdk_actions.print.inc',
   );
 
   return $items;
@@ -43,7 +44,7 @@ function bibdk_actions_get_manifestations($pids) {
 }
 
 /**
- * Retreives the nescessary values from the form_state array and returns array of manifestations
+<* Retreives the nescessary values from the form_state array and returns array of manifestations
  *
  * @param $form_state
  * @param string $view_mode
@@ -72,5 +73,18 @@ function bibdk_actions_entity_info_alter(&$entity_info) {
   $entity_info['bibdkManifestation']['view modes']['email'] = array(
     'label' => t('Cart Email', array(), array('context' => 'bibdk_actions admin')),
     'custom settings' => TRUE,
+    );
+}
+
+/**
+* Implements hook_theme().
+ */
+function bibdk_actions_theme($existing, $type, $theme, $path) {
+  $path = drupal_get_path('module', 'bibdk_actions') . '/theme';
+  return array(
+    'page__print' => array(
+      'template'    => 'page--print',
+      'path'        => $path,
+    ),
   );
 }

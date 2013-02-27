@@ -6,3 +6,4 @@ package = Bibliotek.dk
 
 files[] = bibdk_actions.email.inc
 files[] = bibdk_actions.print.inc
+files[] = theme/page--print.tpl.php
