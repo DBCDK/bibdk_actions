@@ -11,11 +11,6 @@ function bibdk_actions_get_email_actions($actions){
     '#value' => t('email_manifestation', array(), array('context' => 'bibdk_actions')),
     '#submit' => array('bibdk_actions_email_items'),
     '#weight' => 0,
-    '#attributes' => array(
-      'class' => array(
-        'email',
-      ),
-    ),
   );
 
   return $actions;
