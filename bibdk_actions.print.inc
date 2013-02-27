@@ -10,6 +10,11 @@ function bibdk_actions_get_print_actions($actions){
     '#value' => t('print_manifestation', array(), array('context' => 'bibdk_actions')),
     '#submit' => array('bibdk_actions_print_items'),
     '#weight' => 0,
+    '#attributes' => array(
+      'class' => array(
+        'cart-action-btn', 'disabled'
+      ),
+    ),
   );
 
   return $actions;
@@ -21,4 +26,13 @@ function bibdk_actions_get_print_actions($actions){
  */
 function bibdk_actions_print_items($form_id, &$form_state){
   dpm('printing...');
+
+  if(!isset($form_state['input']['cart_table'])){
+    dpm('no items to print');
+    return;
+  }
+  $items = $form_state['input']['cart_table'];
+  foreach($items as $item => $pid){
+    dpm($pid);
+  }
 }
