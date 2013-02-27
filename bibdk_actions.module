@@ -30,6 +30,7 @@ function bibdk_actions_cart_actions($actions){
   return $actions;
 }
 
+
 function bibdk_actions_get_manifestations($pids) {
   /**
    * ting_openformat_get_manifestations returns a bibdkWork as an array and all
@@ -41,3 +42,35 @@ function bibdk_actions_get_manifestations($pids) {
   return (isset($work->manifestations)) ? $work->manifestations : NULL;
 }
 
+/**
+ * Retreives the nescessary values from the form_state array and returns array of manifestations
+ *
+ * @param $form_state
+ * @param string $view_mode
+ * @return array
+ */
+function bibdk_actions_parse_form_state($form_state, $view_mode = 'full'){
+  if(!isset($form_state['input']['cart_table'])){
+    return FALSE;
+  }
+  $items = $form_state['input']['cart_table'];
+  foreach($items as $item => $pid){
+  }
+
+  return $manifestations;
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function bibdk_actions_entity_info_alter(&$entity_info) {
+  $entity_info['bibdkManifestation']['view modes']['print'] = array(
+    'label' => t('Cart print', array(), array('context' => 'bibdk_actions admin')),
+    'custom settings' => TRUE,
+  );
+
+  $entity_info['bibdkManifestation']['view modes']['email'] = array(
+    'label' => t('Cart Email', array(), array('context' => 'bibdk_actions admin')),
+    'custom settings' => TRUE,
+  );
+}

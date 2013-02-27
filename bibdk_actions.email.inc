@@ -26,6 +26,7 @@ function bibdk_actions_get_email_actions($actions){
  * @param $form_state
  */
 function bibdk_actions_email_items($form_id, &$form_state){
+  bibdk_actions_parse_form_state($form_state, 'email');
   dpm('emailing...');
   drupal_set_message('hello world', 'status');
 }

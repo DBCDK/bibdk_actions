@@ -25,16 +25,8 @@ function bibdk_actions_get_print_actions($actions){
  * @param array $form_state
  */
 function bibdk_actions_print_items($form_id, &$form_state){
+  bibdk_actions_parse_form_state($form_state, 'print');
   dpm('printing...');
-
-  if(!isset($form_state['input']['cart_table'])){
-    dpm('no items to print');
-    return;
-  }
-  $items = $form_state['input']['cart_table'];
-  foreach($items as $item => $pid){
-    dpm($pid);
-  }
 }
 
 function bibdk_actions_print_page($ids){
