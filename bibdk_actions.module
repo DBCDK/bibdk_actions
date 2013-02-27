@@ -1,0 +1,17 @@
+<?php
+
+module_load_include('inc', 'bibdk_actions', 'bibdk_actions.print');
+module_load_include('inc', 'bibdk_actions', 'bibdk_actions.email');
+
+/**
+ * Implements hook_cart_actions().
+ *
+ * @internal param array $actions
+ * @param $actions
+ * @return array
+ */
+function bibdk_actions_cart_actions($actions){
+  $actions = bibdk_actions_get_print_actions($actions);
+  $actions = bibdk_actions_get_email_actions($actions);
+  return $actions;
+}
