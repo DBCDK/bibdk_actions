@@ -4,7 +4,7 @@ module_load_include('inc', 'bibdk_actions', 'bibdk_actions.print');
 module_load_include('inc', 'bibdk_actions', 'bibdk_actions.email');
 
 /**
- *
+ * Implements hook_menu().
  */
 function bibdk_actions_menu(){
   $items['print/cart/%'] = array(
@@ -33,6 +33,10 @@ function bibdk_actions_cart_actions($actions){
 }
 
 
+/**
+ * @param $pids
+ * @return array | null
+ */
 function bibdk_actions_get_manifestations($pids) {
   /**
    * ting_openformat_get_manifestations returns a bibdkWork as an array and all
@@ -52,11 +56,16 @@ function bibdk_actions_get_manifestations($pids) {
  * @return array
  */
 function bibdk_actions_parse_form_state($form_state, $view_mode = 'full'){
+
   if(!isset($form_state['input']['cart_table'])){
     return FALSE;
   }
+
   $items = $form_state['input']['cart_table'];
-  foreach($items as $item => $pid){
+  $manifestations = array();
+  foreach($items as $item => $pids_string){
+    $pids = explode(',', $pids_string);
+    $manifestations = bibdk_actions_get_manifestations($pids);
   }
 
   return $manifestations;
