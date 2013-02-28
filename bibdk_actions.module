@@ -28,6 +28,7 @@ function bibdk_actions_menu(){
 function bibdk_actions_cart_actions($actions){
   $actions = bibdk_actions_get_print_actions($actions);
   $actions = bibdk_actions_get_email_actions($actions);
+  drupal_add_js(drupal_get_path('module', 'bibdk_actions') . '/js/bibdk_actions.js');
   return $actions;
 }
 

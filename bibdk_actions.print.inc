@@ -6,14 +6,18 @@
  */
 function bibdk_actions_get_print_actions($actions){
   $actions['print'] = array(
-    '#type' => 'submit',
-    '#value' => t('print_manifestation', array(), array('context' => 'bibdk_actions')),
-    '#submit' => array('bibdk_actions_print_items'),
+    '#theme' => 'link',
+    '#text' => t('print_manifestation', array(), array('context' => 'bibdk_actions')),
+    '#path' => 'print/cart',
     '#weight' => 0,
-    '#attributes' => array(
-      'class' => array(
-        'cart-action-btn', 'disabled'
+    '#options' => array(
+      'query' => null,
+      'attributes' => array(
+        'class' => array(
+          'cart-action-btn', 'inactive'
+        ),
       ),
+      'html' => FALSE,
     ),
   );
 
@@ -36,7 +40,7 @@ function bibdk_actions_print_page($ids){
   foreach($manifestations as $manifestation){
     $view .= ting_openformat_manifestation_view($manifestation, 'full');
   }
-  drupal_add_js(drupal_get_path('module', 'bibdk_actions') . '/js/bibdk_actions.js');
+  drupal_add_js(drupal_get_path('module', 'bibdk_actions') . '/js/bibdk_actions.print.js');
   drupal_add_css(drupal_get_path('module', 'bibdk_actions') . '/css/bibdk_actions.css', array('media' => 'print'));
   return $view;
 }
