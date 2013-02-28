@@ -15,6 +15,14 @@ function bibdk_actions_menu(){
     'file' => 'bibdk_actions.print.inc',
   );
 
+  $items['email/cart/%'] = array(
+    'title' => '',
+    'page callback' => 'bibdk_actions_email_page',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'file' => 'bibdk_actions.email.inc',
+  );
+
   return $items;
 }
 
@@ -49,29 +57,6 @@ function bibdk_actions_get_manifestations($pids) {
 }
 
 /**
-<* Retreives the nescessary values from the form_state array and returns array of manifestations
- *
- * @param $form_state
- * @param string $view_mode
- * @return array
- */
-function bibdk_actions_parse_form_state($form_state, $view_mode = 'full'){
-
-  if(!isset($form_state['input']['cart_table'])){
-    return FALSE;
-  }
-
-  $items = $form_state['input']['cart_table'];
-  $manifestations = array();
-  foreach($items as $item => $pids_string){
-    $pids = explode(',', $pids_string);
-    $manifestations = bibdk_actions_get_manifestations($pids);
-  }
-
-  return $manifestations;
-}
-
-/**
  * Implements hook_entity_info_alter().
  */
 function bibdk_actions_entity_info_alter(&$entity_info) {
@@ -96,10 +81,10 @@ function bibdk_actions_theme($existing, $type, $theme, $path) {
       'template'    => 'page--print',
       'path'        => $path,
     ),
-  'bibdk_actions_print' => array(
-      'template'    => 'bibdk-actions-print',
-      'path'        => $path,
-      'variables'   => array(
+    'bibdk_actions_print' => array(
+      'template' => 'bibdk-actions-print',
+      'path' => $path,
+      'variables' => array(
         'fields' => array(),
         'title' => '',
         'abstract' => '',
@@ -108,5 +93,12 @@ function bibdk_actions_theme($existing, $type, $theme, $path) {
         'subjects' => '',
       ),
     ),
+    'bibdk_actions_email' => array(
+      'template' => 'bibdk-actions-email',
+      'path' => $path,
+      'variables' => array(
+        'hest' => array(),
+      ),
+    )
   );
 }
