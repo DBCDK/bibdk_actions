@@ -96,5 +96,17 @@ function bibdk_actions_theme($existing, $type, $theme, $path) {
       'template'    => 'page--print',
       'path'        => $path,
     ),
+  'bibdk_actions_print' => array(
+      'template'    => 'bibdk-actions-print',
+      'path'        => $path,
+      'variables'   => array(
+        'fields' => array(),
+        'title' => '',
+        'abstract' => '',
+        'author' => '',
+        'pid' => '',
+        'subjects' => '',
+      ),
+    ),
   );
 }
