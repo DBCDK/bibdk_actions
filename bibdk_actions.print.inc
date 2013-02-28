@@ -1,10 +1,11 @@
 <?php
 
-/**
+/** Generates print action link for cart view
+ *
  * @param array $actions
  * @return array
  */
-function bibdk_actions_get_print_actions($actions){
+function bibdk_actions_get_print_actions($actions) {
   $actions['print'] = array(
     '#theme' => 'link',
     '#text' => t('print_manifestation', array(), array('context' => 'bibdk_actions')),
@@ -24,26 +25,50 @@ function bibdk_actions_get_print_actions($actions){
   return $actions;
 }
 
-function bibdk_actions_print_page($ids){
+/** Generates page to be printed
+ *
+ * @param $ids
+ * @return bool|string
+ */
+function bibdk_actions_print_page($ids) {
   $ids = explode(',', $ids);
   $view = "";
   $manifestations = bibdk_actions_get_manifestations($ids);
-  foreach($manifestations as $manifestation){
-   $work = new BibdkWork($manifestation->getWork());
-    $view = ting_openformat_manifestation_view($manifestation, 'print');
-    $view['#theme'] = 'bibdk_actions_print';
-    $view += array(
-      '#title' => _ting_openformat_parse_element($work->getTitle(), ',', TRUE, TRUE),
-      '#abstract' => _ting_openformat_parse_element($work->getAbstract(), ',', TRUE, TRUE),
-      '#subjects' => _ting_openformat_parse_element($work->getSubjects(), ',', TRUE, TRUE),
-      '#author' => _ting_openformat_parse_element($manifestation->getCreator(), ',', TRUE, FALSE),
-      '#type' => _ting_openformat_parse_element($manifestation->getType(), ',', TRUE, TRUE),
-      '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id)),
-
-    );
-    $views[] = $view;
+  foreach ($manifestations as $manifestation) {
+    $views[] = _bibdk_actions_print_manifestation_view($manifestation);
   }
   drupal_add_js(drupal_get_path('module', 'bibdk_actions') . '/js/bibdk_actions.print.js');
   drupal_add_css(drupal_get_path('module', 'bibdk_actions') . '/css/bibdk_actions.css', array('media' => 'all'));
   return drupal_render($views);
+}
+
+/** Generate viewmode for manifestation in print cart viewmode
+ *
+ * @param $manifestation
+ * @return array
+ */
+function _bibdk_actions_print_manifestation_view($manifestation) {
+  $work = new BibdkWork($manifestation->getWork());
+  $view = ting_openformat_manifestation_view($manifestation, 'print');
+  _bibdk_actions_manifestation_view_strip_links($view);
+  $view['#theme'] = 'bibdk_actions_print';
+  $view += array(
+    '#title' => _ting_openformat_parse_element($work->getTitle(), ',', TRUE, TRUE),
+  );
+  return $view;
+}
+
+/**
+ * Hack to remove html tags from fields
+ *
+ * @param $view
+ */
+function _bibdk_actions_manifestation_view_strip_links(&$view) {
+  if (isset($view['#fields']) && is_array($view['#fields'])) {
+    foreach ($view['#fields'] as $key => $field) {
+      if (isset($field[0]['#markup'])) {
+        $view['#fields'][$key][0]['#markup'] = strip_tags($field[0]['#markup']);
+      }
+    }
+  }
 }
