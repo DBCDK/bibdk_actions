@@ -27,19 +27,23 @@ function bibdk_actions_get_print_actions($actions) {
 
 /** Generates page to be printed
  *
- * @param $ids
+ * @param $ids string
  * @return bool|string
  */
 function bibdk_actions_print_page($ids) {
   $ids = explode(',', $ids);
   $view = "";
-  $manifestations = bibdk_actions_get_manifestations($ids);
-  foreach ($manifestations as $manifestation) {
-    $views[] = _bibdk_actions_print_manifestation_view($manifestation);
+  $return = t('no_elements_to_be_printed');
+  if (($manifestations = bibdk_actions_get_manifestations($ids))){
+    foreach ($manifestations as $manifestation) {
+      $views[] = _bibdk_actions_print_manifestation_view($manifestation);
+    }
+    drupal_add_js(drupal_get_path('module', 'bibdk_actions') . '/js/bibdk_actions.print.js');
+    drupal_add_css(drupal_get_path('module', 'bibdk_actions') . '/css/bibdk_actions.css', array('media' => 'all'));
+    $return  = drupal_render($views);
   }
-  drupal_add_js(drupal_get_path('module', 'bibdk_actions') . '/js/bibdk_actions.print.js');
-  drupal_add_css(drupal_get_path('module', 'bibdk_actions') . '/css/bibdk_actions.css', array('media' => 'all'));
-  return drupal_render($views);
+
+  return $return;
 }
 
 /** Generate viewmode for manifestation in print cart viewmode
