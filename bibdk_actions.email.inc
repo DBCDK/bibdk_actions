@@ -47,8 +47,7 @@ function bibdk_actions_email_page($ids) {
     $view = ting_openformat_manifestation_view($manifestation, 'email');
     $view['display'] = bibdk_actions_get_fieldinfo($view);
     $view['#theme'] = 'bibdk_actions_email';
-    //TODO no hest!
-    $content[]['#markup'] = theme('bibdk_actions_email', array('hest' => $view['display']));
+    $content[]['#markup'] = theme('bibdk_actions_email', array('strings' => $view['display']));
     if(empty($title)){
       $title = $manifestation->getTitle();
     }
@@ -81,7 +80,7 @@ function bibdk_actions_get_fieldinfo($view){
  * @internal param $form
  * @return mixed
  */
-function bibdk_actions_mail_form($form_id, $form_state) {
+function bibdk_actions_mail_form($form_id, &$form_state) {
   global $user;
   $form['recipient'] = array(
     '#type' => 'textfield',
@@ -90,9 +89,16 @@ function bibdk_actions_mail_form($form_id, $form_state) {
     '#required' => TRUE,
   );
 
+  $subject_intro = t('manifestations_from @site-name', array('@site-name' => variable_get('site_name', t('email_site_name', array(), array('context' => 'bibdk_actions')))));
+  $subject_title = (isset($form_state['build_info']['args'][0]['title'])) ? ' - ' . $form_state['build_info']['args'][0]['title'] : '';
+  $subject_more = (count($form_state['build_info']['args'][0]['content']) >= 2) ? ' - ' . t('and_other_titles', array(), array('context' => 'bibdk_actions')) : '';
+  $subject = $subject_intro . $subject_title . $subject_more;
+
+
   $form['subject'] = array(
-    '#type' => 'textarea',
-    '#title' => t('message_for_recipient', array(), array('context' => 'bibdk_actions')),
+    '#type' => 'textfield',
+    '#title' => t('email_subject', array(), array('context' => 'bibdk_actions')),
+    '#default_value' => $subject,
     '#required' => FALSE,
   );
 
@@ -129,9 +135,10 @@ function bibdk_actions_mail_form_validate($form, &$form_state) {
  * @param $form_state
  */
 function bibdk_actions_mail_form_submit($form_id, &$form_state) {
-  $params['form_values'] = $form_state['values'];
   $params['manifestations'] = $form_state['build_info']['args'][0]['content'];
-  $params['title'] = $form_state['build_info']['args'][0]['title'];
+  $params['subject'] = $form_state['values']['subject'];
+  $params['note'] = $form_state['values']['note'];
+  $params['recipient'] = $form_state['values']['recipient'];
   bibdk_actions_mail_send($params);
 }
 
@@ -143,7 +150,7 @@ function bibdk_actions_mail_form_submit($form_id, &$form_state) {
 function bibdk_actions_mail_send($params) {
   $module = 'bibdk_actions';
   $key = 'mail_cart_items';
-  $to = 'mmj@dbc.dk'; #$form_values['email'];
+  $to = $params['recipient'];
 
   global $language;
 
@@ -163,21 +170,10 @@ function bibdk_actions_mail_send($params) {
  * Implements hook_mail().
  */
 function bibdk_actions_mail($key, &$message, $params) {
-  //TODO include notes and custom messages from form into final message
-  $options = array(
-    'langcode' => $message['language']->language,
-    'context' => 'bibdk_actions'
-  );
-
-  $subject_intro = t('manifestations_from @site-name', array('@site-name' => variable_get('site_name', t('email_site_name', array(), array('context' => 'bibdk_actions')))), $options);
-  $subject_title = isset($params['title']) ? ' - ' . $params['title'] : '';
-  $subject_more = count($params['manifestations']) ? ' - ' . t('and_other_titles', array(), array('context' => 'bibdk_actions')) : '';
-
-  $subject = $subject_intro . $subject_title . $subject_more;
-
   switch ($key) {
     case 'mail_cart_items':
-      $message['subject'] = $subject;
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['note'];
       $message['body'][] = drupal_render($params['manifestations']);
       break;
   }

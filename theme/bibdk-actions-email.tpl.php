@@ -1,4 +1,5 @@
-<?php foreach ($hest as $string): ?>
-  <?php print $string; ?>"\r\n"
+<?php foreach ($strings as $string): ?>
+<?php print $string; ?>
+<?php print "\r\n"; ?>
 <?php endforeach; ?>
-"\r\n"
+<?php print "\r\n"; ?>

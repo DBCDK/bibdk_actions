@@ -97,7 +97,7 @@ function bibdk_actions_theme($existing, $type, $theme, $path) {
       'template' => 'bibdk-actions-email',
       'path' => $path,
       'variables' => array(
-        'hest' => array(),
+        'strings' => array(),
       ),
     )
   );
