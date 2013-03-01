@@ -12,13 +12,14 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
 
   public function setUp() {
     $this->profile = 'minimal';
-    parent::setUp(array('bibdk_actions', 'ting_openformat', 'field_ui'));
+    parent::setUp('bibdk_cart', 'bibdk_actions', 'ting_openformat', 'field_ui', 'bibdk_provider', 'bibdk_webservice');
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
   }
 
   public function testRunner(){
+    $this->_testBibdkCartHook();
     $this->_testPrintview();
     $this->_testPrintFunctions();
     $this->_testActionFunctions();
@@ -28,6 +29,30 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
     $admin_user = $this->drupalCreateUser(array('access content', 'administer content types'));
     $this->drupalLogin($admin_user);
   }
+
+  private function _addElementToCart(){
+    $pid = '870970-basis:29225605';
+    $url = $this->getAbsoluteUrl('cart/ajax');
+    $options = array(
+      'query' => array(
+        'pid' => $pid,
+      ),
+    );
+    return $this->drupalGetAJAX($url, $options);
+  }
+
+  private function _testBibdkCartHook(){
+    // Empty cart
+    $this->drupalGet('user/cart');
+    $this->assertNoLink('print_manifestation', 0, 'print link is not present when cart is empty');
+
+    // Test link exists
+    $this->_addElementToCart();
+    $this->drupalGet('user/cart');
+    $this->assertLink('print_manifestation', 0, 'print link is present');
+    $this->assertLink('email_manifestation', 0, 'email link is present');
+  }
+
   private function _testActionFunctions(){
     /* bibdk_actions_get_manifestations */
 
@@ -51,18 +76,22 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
 
   private function _testPrintFunctions(){
     /* bibdk_actions_print_page */
+    // more than one id
     $ids = '852350-katalog:000006180,830080-katalog:000145418,820030-katalog:179554,870970-basis:21905208';
     $result = bibdk_actions_print_page($ids);
     $this->assertTrue(preg_match('@<h4> Bare rolig - der er stress nok til alle</h4>@', $result), 'Results are generated, when more than 1 pid is given');
 
+    // one id
     $ids = '870970-basis:21905208';
     $result = bibdk_actions_print_page($ids);
     $this->assertTrue(preg_match('@<h4> Tove Ditlevsen</h4>@', $result), 'Results are generated, when 1 pid is given');
 
+    // no ids
     $ids = '';
     $result = bibdk_actions_print_page($ids);
     $this->assertTrue(preg_match('@no_elements_to_be_printed@', $result), 'No Results are generated if no pids are send');
 
+    // invalid id
     $ids = 'not_a_manifestation';
     $result = bibdk_actions_print_page($ids);
     $this->assertTrue(preg_match('@no_elements_to_be_printed@', $result), 'No Results are generated if pid is invalid');
@@ -75,8 +104,13 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
         ),
     );
     _bibdk_actions_manifestation_view_strip_links($view);
+
+    // Link has been stripped
     $this->assertEqual($view['#fields']['bibdk_mani_creators'][0]['#markup'], 'Test Link Text', 'links have been stripped from html');
+    // Text remain unchanced
     $this->assertEqual($view['#fields']['bibdk_mani_format'][0]['#markup'], 'just text', 'Textstring preserved');
+
+    // function handles empty array
     $view = array();
     _bibdk_actions_manifestation_view_strip_links($view);
     $this->assertEqual(array(), array(), 'empty array is accepted');
