@@ -23,7 +23,26 @@ function bibdk_actions_menu(){
     'file' => 'bibdk_actions.email.inc',
   );
 
+  //Admin
+  $items['admin/config/system/site-information/actions'] = array(
+    'title' => t('Bibliotek.dk', array(), array('context' => 'bibdk_actions')),
+    'description' => t('Settings for the send mail functionality in cart view', array(), array('context' => 'bibdk_actions')),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bibdk_actions_admin_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'bibdk_actions.admin.inc',
+  );
+
   return $items;
+}
+
+/**
+ * @param $items
+ */
+function bibdk_actions_menu_alter(&$items){
+  $items['admin/config/system/site-information/default'] = $items['admin/config/system/site-information'];
+  $items['admin/config/system/site-information/default']['type'] = MENU_DEFAULT_LOCAL_TASK;
 }
 
 /**

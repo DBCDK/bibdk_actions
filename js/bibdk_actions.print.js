@@ -3,6 +3,4 @@
     setTimeout(function () {
         window.close();
     }, 60000);
-
 }());
-
