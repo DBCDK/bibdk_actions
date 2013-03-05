@@ -43,20 +43,24 @@ function bibdk_actions_email_page($ids) {
 
   $title = '';
   $content = array();
-  foreach ($manifestations as $manifestation) {
-    $view = ting_openformat_manifestation_view($manifestation, 'email');
-    $view['display'] = bibdk_actions_get_fieldinfo($view);
-    $view['#theme'] = 'bibdk_actions_email';
-    $content[]['#markup'] = theme('bibdk_actions_email', array('strings' => $view['display']));
-    if (empty($title)) {
-      $title = $manifestation->getTitle();
+  if (isset($manifestations)) {
+    foreach ($manifestations as $manifestation) {
+      $view = ting_openformat_manifestation_view($manifestation, 'email');
+      $view['display'] = bibdk_actions_get_fieldinfo($view);
+      $view['#theme'] = 'bibdk_actions_email';
+      $content[]['#markup'] = theme('bibdk_actions_email', array('strings' => $view['display']));
+      if (empty($title)) {
+        $title = $manifestation->getTitle();
+      }
     }
+    $form_values['content'] = $content;
+    $form_values['title'] = $title;
+
+    $mail_form = drupal_get_form('bibdk_actions_mail_form', $form_values);
   }
-
-  $form_values['content'] = $content;
-  $form_values['title'] = $title;
-
-  $mail_form = drupal_get_form('bibdk_actions_mail_form', $form_values);
+  else {
+    $mail_form = t('no_elements_to_be_emailed', array(), array('context' => 'bibdk_actions'));
+  }
   return $mail_form;
 }
 
@@ -93,13 +97,7 @@ function bibdk_actions_mail_form($form_id, &$form_state) {
   $subject_title = (isset($form_state['build_info']['args'][0]['title'])) ? ' - ' . $form_state['build_info']['args'][0]['title'] : '';
   $subject_more = (count($form_state['build_info']['args'][0]['content']) >= 2) ? ' - ' . t('and_other_titles', array(), array('context' => 'bibdk_actions')) : '';
 
-  //if subjectfield is going to be more than tha maximum allowed 128 chars we will shorten the title
-  if((drupal_strlen($subject_intro) + drupal_strlen($subject_title) + drupal_strlen($subject_more)) > 128) {
-    $length = (128 - (drupal_strlen($subject_intro) + drupal_strlen($subject_more) + 3));
-    $subject_title = drupal_substr($subject_title, 0, $length) . '...';
-  }
-
-  $subject = $subject_intro . $subject_title . $subject_more;
+  $subject = _bibdk_actions_shorten_subject($subject_intro, $subject_title, $subject_more);
 
   $form['subject'] = array(
     '#type' => 'textfield',
@@ -129,6 +127,22 @@ function bibdk_actions_mail_form($form_id, &$form_state) {
   );
 
   return $form;
+}
+
+/**
+ * if subjectfield is going to be more than tha maximum allowed 128 chars we will shorten the title
+ *
+ * @param $subject_intro
+ * @param $subject_title
+ * @param $subject_more
+ * @return string
+ */
+function _bibdk_actions_shorten_subject($subject_intro, $subject_title, $subject_more) {
+  if ((drupal_strlen($subject_intro) + drupal_strlen($subject_title) + drupal_strlen($subject_more)) > 128) {
+    $length = (128 - (drupal_strlen($subject_intro) + drupal_strlen($subject_more) + 3));
+    $subject_title = drupal_substr($subject_title, 0, $length) . '...';
+  }
+  return $subject_intro . $subject_title . $subject_more;
 }
 
 /**

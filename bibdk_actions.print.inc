@@ -33,7 +33,7 @@ function bibdk_actions_get_print_actions($actions) {
 function bibdk_actions_print_page($ids) {
   $ids = explode(',', $ids);
   $view = "";
-  $return = t('no_elements_to_be_printed');
+  $return = t('no_elements_to_be_printed', array(), array('context' => 'bibdk_actions'));
   if (($manifestations = bibdk_actions_get_manifestations($ids))){
     foreach ($manifestations as $manifestation) {
       $views[] = _bibdk_actions_print_manifestation_view($manifestation);
