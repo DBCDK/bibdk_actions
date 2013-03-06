@@ -37,9 +37,9 @@ function bibdk_actions_email_page($ids) {
   if (empty($ids)) {
     return FALSE;
   }
-
-  $ids = explode(',', $ids);
-  $manifestations = bibdk_actions_get_manifestations($ids);
+  $pids = preg_replace('@;@', ',', $ids);
+  $pids = explode(',', $ids);
+  $manifestations = bibdk_actions_get_manifestations($pids);
 
   $title = '';
   $content = array();
@@ -55,6 +55,7 @@ function bibdk_actions_email_page($ids) {
     }
     $form_values['content'] = $content;
     $form_values['title'] = $title;
+    $form_values['ids'] = $ids;
 
     $mail_form = drupal_get_form('bibdk_actions_mail_form', $form_values);
   }
@@ -168,6 +169,8 @@ function bibdk_actions_mail_form_submit($form_id, &$form_state) {
   $params['note'] = $form_state['values']['note'];
   $params['recipient'] = $form_state['values']['recipient'];
   bibdk_actions_mail_send($params);
+  $ids = $form_state['build_info']['args'][0]['ids'];
+  bibdk_cart_reservation_update_status('print_complete', $ids);
 }
 
 /**

@@ -31,10 +31,11 @@ function bibdk_actions_get_print_actions($actions) {
  * @return bool|string
  */
 function bibdk_actions_print_page($ids) {
-  $ids = explode(',', $ids);
+  $pids = preg_replace('@;@', ',', $ids);
+  $pids = explode(',', $ids);
   $view = "";
   $return = t('no_elements_to_be_printed', array(), array('context' => 'bibdk_actions'));
-  if (($manifestations = bibdk_actions_get_manifestations($ids))){
+  if (($manifestations = bibdk_actions_get_manifestations($pids))){
     foreach ($manifestations as $manifestation) {
       $views[] = _bibdk_actions_print_manifestation_view($manifestation);
     }
@@ -42,7 +43,7 @@ function bibdk_actions_print_page($ids) {
     drupal_add_css(drupal_get_path('module', 'bibdk_actions') . '/css/bibdk_actions.css', array('media' => 'all'));
     $return  = drupal_render($views);
   }
-
+  bibdk_cart_reservation_update_status('print_complete', $ids);
   return $return;
 }
 

@@ -24,7 +24,7 @@
                         return this.value;
                     }).get();
                     if (checkedVals.length > 0) {
-                        var href = $(this).attr('href') + '/' + checkedVals.join(",");
+                        var href = $(this).attr('href') + '/' + checkedVals.join(";");
                         Drupal.cart_popup(href);
                     }
                 });
