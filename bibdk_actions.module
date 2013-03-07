@@ -18,7 +18,7 @@ function bibdk_actions_menu(){
   $items['email/cart/%'] = array(
     'title' => '',
     'page callback' => 'bibdk_actions_email_page',
-    'page arguments' => array(2),
+    'page arguments' => array(2, 3),
     'access arguments' => array('access content'),
     'file' => 'bibdk_actions.email.inc',
   );

@@ -31,12 +31,15 @@ function bibdk_actions_get_email_actions($actions) {
  * Callback function when user clicks email button in cart view
  *
  * @param $ids
+ * @param bool $sent
  * @return bool|string
  */
-function bibdk_actions_email_page($ids) {
+function bibdk_actions_email_page($ids, $sent = FALSE) {
   if (empty($ids)) {
     return FALSE;
   }
+
+  $idsstring = $ids;
   $ids = preg_replace('@;@', ',', $ids);
   $pids = explode(',', $ids);
 
@@ -57,6 +60,8 @@ function bibdk_actions_email_page($ids) {
     $form_values['content'] = $content;
     $form_values['title'] = $title;
     $form_values['ids'] = $ids;
+    $form_values['sent'] = $sent;
+    $form_values['idsstring'] = $idsstring;
 
     $mail_form = drupal_get_form('bibdk_actions_mail_form', $form_values);
   }
@@ -92,6 +97,7 @@ function bibdk_actions_get_fieldinfo($view) {
  */
 function bibdk_actions_mail_form($form_id, &$form_state) {
   global $user;
+
   $form['recipient'] = array(
     '#type' => 'textfield',
     '#title' => t('recipients_email_adress', array(), array('context' => 'bibdk_actions')),
@@ -131,6 +137,10 @@ function bibdk_actions_mail_form($form_id, &$form_state) {
       'onClick' => array('window.close();'),
     ),
   );
+
+  if($form_state['build_info']['args'][0]['sent']){
+    drupal_add_js(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart_reload.js');
+  }
 
   return $form;
 }
@@ -176,6 +186,7 @@ function bibdk_actions_mail_form_submit($form_id, &$form_state) {
   bibdk_actions_mail_send($params);
   $ids = $form_state['build_info']['args'][0]['ids'];
   bibdk_cart_reservation_update_status('email_complete', $ids);
+  drupal_goto('email/cart/'.$form_state['build_info']['args'][0]['idsstring'].'/1');
 }
 
 /**

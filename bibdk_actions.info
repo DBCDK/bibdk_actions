@@ -4,6 +4,8 @@ core = 7.x
 version = 7.x-1.x-dev
 package = Bibliotek.dk
 
+dependencies[] = bibdk_cart
+
 files[] = bibdk_actions.email.inc
 files[] = bibdk_actions.print.inc
 files[] = bibdk_actions.admin.inc
