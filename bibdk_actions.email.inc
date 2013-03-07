@@ -28,7 +28,7 @@ function bibdk_actions_get_email_actions($actions) {
 }
 
 /**
- * Callback function when user clicks print button in cart view
+ * Callback function when user clicks email button in cart view
  *
  * @param $ids
  * @return bool|string
@@ -37,8 +37,9 @@ function bibdk_actions_email_page($ids) {
   if (empty($ids)) {
     return FALSE;
   }
-  $pids = preg_replace('@;@', ',', $ids);
+  $ids = preg_replace('@;@', ',', $ids);
   $pids = explode(',', $ids);
+
   $manifestations = bibdk_actions_get_manifestations($pids);
 
   $title = '';
@@ -65,6 +66,10 @@ function bibdk_actions_email_page($ids) {
   return $mail_form;
 }
 
+/**
+ * @param $view
+ * @return array
+ */
 function bibdk_actions_get_fieldinfo($view) {
   $display_strings = array();
   if (isset($view['#fields']) && is_array($view['#fields'])) {
@@ -170,7 +175,7 @@ function bibdk_actions_mail_form_submit($form_id, &$form_state) {
   $params['recipient'] = $form_state['values']['recipient'];
   bibdk_actions_mail_send($params);
   $ids = $form_state['build_info']['args'][0]['ids'];
-  bibdk_cart_reservation_update_status('print_complete', $ids);
+  bibdk_cart_reservation_update_status('email_complete', $ids);
 }
 
 /**
