@@ -1,7 +1,7 @@
 (function ($) {
 
     Drupal.cart_popup = function (href) {
-        settings = {
+       var settings = {
             height: 600, // sets the height in pixels of the window.
             width: 600, // sets the width in pixels of the window.
             toolbar: 0, // determines whether a toolbar (includes the forward and back buttons) is displayed {1 (YES) or 0 (NO)}.
@@ -13,7 +13,7 @@
             location: 0, // determines whether the address bar is displayed {1 (YES) or 0 (NO)}.
             menubar: 0 // determines whether the menu bar is displayed {1 (YES) or 0 (NO)}.
         };
-        parameters = "location=" + settings.location + ",menubar=" + settings.menubar + ",height=" + settings.height + ",width=" + settings.width + ",toolbar=" + settings.toolbar + ",scrollbars=" + settings.scrollbars + ",status=" + settings.status + ",resizable=" + settings.resizable + ",left=" + settings.left + ",screenX=" + settings.left + ",top=" + settings.top + ",screenY=" + settings.top;
+        var parameters = "location=" + settings.location + ",menubar=" + settings.menubar + ",height=" + settings.height + ",width=" + settings.width + ",toolbar=" + settings.toolbar + ",scrollbars=" + settings.scrollbars + ",status=" + settings.status + ",resizable=" + settings.resizable + ",left=" + settings.left + ",screenX=" + settings.left + ",top=" + settings.top + ",screenY=" + settings.top;
 
         window.open(href, 'actions', parameters).focus();
     };
