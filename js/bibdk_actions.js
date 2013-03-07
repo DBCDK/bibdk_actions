@@ -1,7 +1,7 @@
 (function ($) {
 
     Drupal.cart_popup = function (href) {
-       var settings = {
+        var settings = {
             height: 600, // sets the height in pixels of the window.
             width: 600, // sets the width in pixels of the window.
             toolbar: 0, // determines whether a toolbar (includes the forward and back buttons) is displayed {1 (YES) or 0 (NO)}.
@@ -14,21 +14,21 @@
             menubar: 0 // determines whether the menu bar is displayed {1 (YES) or 0 (NO)}.
         };
         var parameters = "location=" + settings.location + ",menubar=" + settings.menubar + ",height=" + settings.height + ",width=" + settings.width + ",toolbar=" + settings.toolbar + ",scrollbars=" + settings.scrollbars + ",status=" + settings.status + ",resizable=" + settings.resizable + ",left=" + settings.left + ",screenX=" + settings.left + ",top=" + settings.top + ",screenY=" + settings.top;
-
-        window.open(href, 'actions', parameters).focus();
+        window.open(href, 'actions', parameters);
     };
-        Drupal.behaviors.cart_action = {
-            attach: function (context) {
-                $('.cart-action-btn', context).click(function (e) {
-                    e.preventDefault();
-                    var checkedVals = $('input:checkbox:checked').map(function () {
-                        return this.value;
-                    }).get();
-                    if (checkedVals.length > 0) {
-                        var href = $(this).attr('href') + '/' + checkedVals.join(";");
-                        Drupal.cart_popup(href);
-                    }
-                });
-            }
-        };
+
+    Drupal.behaviors.cart_action = {
+        attach: function (context) {
+            $('.cart-action-btn', context).click(function (e) {
+                e.preventDefault();
+                var checkedVals = $('input:checkbox:checked').map(function () {
+                    return this.value;
+                }).get();
+                if (checkedVals.length > 0) {
+                    var href = $(this).attr('href') + '/' + checkedVals.join(";");
+                    Drupal.cart_popup(href);
+                }
+            });
+        }
+    };
 }(jQuery));
