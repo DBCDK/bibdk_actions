@@ -14,7 +14,7 @@
             menubar: 0 // determines whether the menu bar is displayed {1 (YES) or 0 (NO)}.
         };
         parameters = "location=" + settings.location + ",menubar=" + settings.menubar + ",height=" + settings.height + ",width=" + settings.width + ",toolbar=" + settings.toolbar + ",scrollbars=" + settings.scrollbars + ",status=" + settings.status + ",resizable=" + settings.resizable + ",left=" + settings.left + ",screenX=" + settings.left + ",top=" + settings.top + ",screenY=" + settings.top;
-        window.open(href, Drupal.t('Print cart'), parameters).focus();
+        window.open(href, Drupal.t('Print cart'), parameters);
     };
         Drupal.behaviors.cart_action = {
             attach: function (context) {
