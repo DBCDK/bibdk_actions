@@ -32,7 +32,7 @@ function bibdk_actions_get_print_actions($actions) {
  */
 function bibdk_actions_print_page($ids) {
   $pids = preg_replace('@;@', ',', $ids);
-  $pids = explode(',', $ids);
+  $pids = explode(',', $pids);
   $view = "";
   $return = t('no_elements_to_be_printed', array(), array('context' => 'bibdk_actions'));
   if (($manifestations = bibdk_actions_get_manifestations($pids))){
