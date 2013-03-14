@@ -1,7 +1,7 @@
 name = Bibliotek.dk - Actions
 description = Module providing action for emailing & printing specific items on Bibliotek.dk
 core = 7.x
-version = 7.x-1.x-dev
+version = 7.x-0.1
 package = Bibliotek.dk
 
 dependencies[] = bibdk_cart
