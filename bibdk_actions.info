@@ -4,6 +4,8 @@ core = 7.x
 version = 7.x-0.1
 package = Bibliotek.dk
 
+configure = admin/config/system/site-information/actions
+
 dependencies[] = bibdk_cart
 
 files[] = bibdk_actions.email.inc
