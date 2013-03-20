@@ -81,10 +81,11 @@ function bibdk_actions_get_fieldinfo($view) {
   if (isset($view['#fields']) && is_array($view['#fields'])) {
     foreach ($view['#fields'] as $key => $field) {
       if (isset($field[0]['#markup']) && isset($field['#title'])) {
-        $display_strings[] = $field['#title'] . ': ' . $field[0]['#markup'];
+        $display_strings[$field['#weight']] = t($field['#title']) . ': ' . $field[0]['#markup'];
       }
     }
   }
+  ksort($display_strings);
   return $display_strings;
 }
 
