@@ -15,7 +15,7 @@ function bibdk_actions_get_print_actions($actions) {
       'query' => null,
       'attributes' => array(
         'class' => array(
-          'cart-action-btn', 'inactive'
+          'cart-action-btn', 'inactive', 'cart-popup',
         ),
       ),
       'html' => FALSE,
