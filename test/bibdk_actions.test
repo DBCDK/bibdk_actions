@@ -23,12 +23,12 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
   }
 
   public function testRunner() {
-    /*$this->_testBibdkCartHook();
+    $this->_testBibdkCartHook();
     $this->_testPrintview();
     $this->_testPrintFunctions();
     $this->_testActionFunctions();
     $this->_testEmailFunctions();
-    $this->_testEmailview();*/
+    $this->_testEmailview();
     $this->_testExportFunctions();
     $this->_testExportView();
   }
