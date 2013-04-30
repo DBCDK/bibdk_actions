@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Class BibdkActionsWebTestCase
  */
@@ -23,12 +23,14 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
   }
 
   public function testRunner() {
-    $this->_testBibdkCartHook();
+    /*$this->_testBibdkCartHook();
     $this->_testPrintview();
     $this->_testPrintFunctions();
     $this->_testActionFunctions();
     $this->_testEmailFunctions();
-    $this->_testEmailview();
+    $this->_testEmailview();*/
+    $this->_testExportFunctions();
+    $this->_testExportView();
   }
 
   private function _login_as_admin() {
@@ -50,6 +52,79 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
     return $this->drupalGetAJAX($url, $options);
   }
 
+
+  private function _testExportView(){
+    $expected_result = 'TY  - MUSIC
+A1  - Bojesen,Michael
+A1  - Rasmussen,Halfdan
+T1  - Halfdan på ny
+SP  - Partitur, (20 sider)
+PB  - DanMus
+CY  - København
+Y1  - 1989
+T3  - Musik i skolen. Ny serie A, Lige stemmer, 3
+ER  -
+
+TY  - SOUND
+A1  - Syberg,Karen
+A1  - Andersen,Gerda, f. 1933
+T1  - Tove Ditlevsen
+SP  - 12 kassettebånd (16 t., 18 min.), i 2 bokse
+PB  - Danmarks Blindebibliotek
+CY  - Kbh.
+Y1  - 1997
+SN  - 11878
+N1  - Om forfatteren Tove Ditlevsens (1917-1976) fattige opvækst på Vesterbro, hendes angstfyldte forhold til virkeligheden og de dramatiske og til tider tragiske begivenheder i hendes liv, hvoraf hendes digtning udsprang
+KW  - Tove Ditlevsen
+KW  - dansk litteratur
+KW  - litteratur
+KW  - 1900-1999
+KW  - forfattere
+KW  - Danmark
+ER  -';
+    $this->drupalGet('export/cart/852350-katalog:000006180;830080-katalog:000145418;820030-katalog:179554;870970-basis:21905208');
+    $this->assertText($expected_result);
+
+  }
+
+  private function _testExportFunctions(){
+    $path = drupal_get_path('module', 'bibdk_actions');
+    $xml = file_get_contents($path . '/test/xml/openbibdk_ris_result.xml');
+    $expected_result = 'TY  - BOOKA1  - Welle-Strand,EdvardT1  - Hvor fisk vaker og fugl flyrSP  - 157 s.CY  - TrondheimY1  - T3  - Bruns jeger og fiskerbibliotekER  -
+
+TY  - BOOKA1  - Hvass,HansA1  - Eigener,WilhelmT1  - Fische der WeltSP  - 158 S., Zahlr. illustreret (farb.)PB  - Gebrüder WeissCY  - Berlin-SchönebergY1  - ER  -';
+
+    $ref_nodes = _bibdk_actions_refexport_convert_result_to_ref_format($xml, 'ris');
+
+    $this->assertEqual($expected_result, $ref_nodes, t('xml from webservice correctly converted into textfile'));
+    try{
+      $result = _bibdk_actions_refexport_convert_result_to_ref_format('', 'ris');
+    }catch(Exception $e){
+      $result = $e;
+    }
+    $this->assertEqual(get_class($result), 'Exception', t('empty xml throws an Exception'));
+
+
+
+    $xml = _bibdk_actions_refexport_get_manifestations_from_webservice(array('870970-basis:29225605'), 'ris');
+    $result = _bibdk_actions_refexport_convert_result_to_ref_format($xml, 'ris');
+    $expected_result = 'TY  - MPCT
+T1  - Headhunterne
+SP  - 1 blu-ray disc (blu-ray) (101 min.)
+PB  - Nordisk Film
+CY  - Valby
+Y1  - 2012
+SN  - BLURAY DISC 2077831
+N1  - Roger Brown er succesfuld headhunter, der supplerer sin indtægt med kunsttyverier for at bevare sit overdådige luksusliv med kæresten Diana. Da han stjæler kandidaten Clas Greves Rubens-maleri bliver det starten på en labyrintisk duel på liv og død mellem de to
+KW  - krimi
+KW  - actionfilm
+KW  - kunsttyveri
+KW  - headhunting
+KW  - Norge
+ER  -';
+    $this->assertEqual($expected_result, $result, t('call to webservice correctly converted into textfile'));
+  }
+
   private function _testBibdkCartHook() {
     // Empty cart
     $this->drupalGet('user/cart');
@@ -60,6 +135,7 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
     $this->drupalGet('user/cart');
     $this->assertLink('print_manifestation', 0, 'print link is present');
     $this->assertLink('email_manifestation', 0, 'email link is present');
+    $this->assertLink('export_manifestation', 0, 'email link is present');
   }
 
   private function _testActionFunctions() {
