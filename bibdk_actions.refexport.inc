@@ -1,12 +1,25 @@
 <?php
 
+/** Page that will generate a file with reference information
+ * @param $ids
+ * @return null The proces is killed after the file has been echoed
+ */
 function bibdk_actions_refexport_page($ids){
-  $id = explode(';',$ids);
-  bibdk_actions_refexport_file($id);
-  return '';
+  $ids = preg_replace('@;@', ',', $ids);
+  $ids = explode(',', $ids);
+
+  try{
+    bibdk_actions_refexport_file($ids);
+  } catch (Exception $e){
+    drupal_set_message(t('export_cannot_be_generated'), 'error');
+  }
+
 }
 
-
+/** link for cart actions hook
+ * @param $actions
+ * @return mixed
+ */
 function bibdk_actions_get_refexport_actions($actions) {
   $actions['export'] = array(
     '#theme' => 'link',
@@ -42,11 +55,11 @@ function bibdk_actions_refexport_file($ids, $format = 'ris'){
   drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
   drupal_add_http_header('Content-Disposition', 'attachment; filename='.$filename);
 
-  echo implode("\n\n", $result);
+  echo $result;
   die();
 }
 
-/** Get reviews with ids $ids
+/** Get references with ids $ids
  * @param $ids
  * @return xml
  */
@@ -63,7 +76,7 @@ function _bibdk_actions_refexport_get_manifestations_from_webservice($ids, $obje
 
 }
 
-/** Converts result from webservice to BibdkReview Objects
+/** extract reference format from webservice result
  * @param $result xml
  * @return array
  */
@@ -71,7 +84,7 @@ function _bibdk_actions_refexport_convert_result_to_ref_format($result, $format)
   $dom = new DomDocument();
 
   if (!@$dom->loadXML($result)) {
-    //watchdog('bibdk_reviews', t('BIBDK material review could not load response: %xml', array('%xml' => var_export($xml, TRUE))), array(), WATCHDOG_ERROR);
+    throw new Exception();
   }
   $xpath = new DomXPATH($dom);
   $xpath->registerNamespace('ns', 'http://oss.dbc.dk/ns/opensearch');
@@ -81,5 +94,5 @@ function _bibdk_actions_refexport_convert_result_to_ref_format($result, $format)
   foreach ($nodelist as $node) {
     $ref_nodes[] = $node->nodeValue;
   }
-  return $ref_nodes;
+  return implode("\n\n", $ref_nodes);
 }
