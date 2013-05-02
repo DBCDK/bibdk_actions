@@ -52,7 +52,7 @@ function bibdk_actions_refexport_file($ids, $format = 'ris'){
 
   $filename = 'bibdk_'.date('Ymd_His').'.txt';
 
-  drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
+  drupal_add_http_header('Content-Type', 'text/plain; charset=utf-8');
   drupal_add_http_header('Content-Disposition', 'attachment; filename='.$filename);
 
   echo $result;
