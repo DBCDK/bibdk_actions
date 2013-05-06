@@ -17,7 +17,7 @@ function bibdk_actions_get_email_actions($actions) {
       'query' => NULL,
       'attributes' => array(
         'class' => array(
-          'cart-action-btn', 'inactive'
+          'cart-action-btn', 'inactive', 'cart-popup',
         ),
       ),
       'html' => FALSE,
