@@ -26,7 +26,11 @@
                 }).get();
                 if (checkedVals.length > 0) {
                     var href = $(this).attr('href') + '/' + checkedVals.join(";");
-                    Drupal.cart_popup(href);
+                    if ($(this).hasClass('cart-popup'))
+                        Drupal.cart_popup(href);
+                    else
+                        window.location = href;
+
                 }
             });
         }
