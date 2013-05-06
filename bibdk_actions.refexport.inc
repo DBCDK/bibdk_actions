@@ -50,9 +50,9 @@ function bibdk_actions_refexport_file($ids, $format = 'ris'){
   $ris = _bibdk_actions_refexport_get_manifestations_from_webservice($ids, $format);
   $result = _bibdk_actions_refexport_convert_result_to_ref_format($ris, $format);
 
-  $filename = 'bibdk_'.date('Ymd_His').'.txt';
+  $filename = 'bibdk_'.date('Ymd_His').'.'.$format;
 
-  drupal_add_http_header('Content-Type', 'text/plain; charset=utf-8');
+  drupal_add_http_header('Content-Type', 'application/x-endnote-refer; charset=utf-8');
   drupal_add_http_header('Content-Disposition', 'attachment; filename='.$filename);
 
   echo $result;
