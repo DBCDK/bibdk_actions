@@ -40,8 +40,8 @@ function bibdk_actions_email_page($ids, $sent = FALSE) {
   }
 
   $idsstring = $ids;
-  $ids = preg_replace('@;@', ',', $ids);
-  $pids = explode(',', $ids);
+  $pids = preg_replace('@;@', ',', $ids);
+  $pids = explode(',', $pids);
 
   $manifestations = bibdk_actions_get_manifestations($pids);
 
@@ -187,7 +187,10 @@ function bibdk_actions_mail_form_submit($form_id, &$form_state) {
   $params['recipient'] = $form_state['values']['recipient'];
   bibdk_actions_mail_send($params);
   $ids = $form_state['build_info']['args'][0]['ids'];
-  bibdk_cart_reservation_update_status('email_complete', $ids);
+  $ids = explode(';', $ids);
+  foreach($ids as $id){
+    bibdk_cart_reservation_update_status('email_complete', $id);
+  }
   drupal_goto('email/cart/'.$form_state['build_info']['args'][0]['idsstring'].'/1');
 }
 
