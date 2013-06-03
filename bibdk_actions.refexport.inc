@@ -5,11 +5,16 @@
  * @return null The proces is killed after the file has been echoed
  */
 function bibdk_actions_refexport_page($ids){
-  $ids = preg_replace('@;@', ',', $ids);
-  $ids = explode(',', $ids);
+  $pids = preg_replace('@;@', ',', $ids);
+  $pids = explode(',', $pids);
 
   try{
-    bibdk_actions_refexport_file($ids);
+    bibdk_actions_refexport_file($pids);
+    $ids = explode(';', $ids);
+    foreach($ids as $id){
+      bibdk_cart_reservation_update_status('export_complete', $id);
+    }
+    die();
   } catch (Exception $e){
     drupal_set_message(t('export_cannot_be_generated'), 'error');
   }
@@ -56,7 +61,6 @@ function bibdk_actions_refexport_file($ids, $format = 'ris'){
   drupal_add_http_header('Content-Disposition', 'attachment; filename='.$filename);
 
   echo $result;
-  die();
 }
 
 /** Get references with ids $ids
