@@ -23,17 +23,18 @@ function bibdk_actions_refexport_page($ids){
 
 
 /**
- * Implements hook_manifestation_actions
+ * Implements hook_ting_openformat_actions
  */
 
-function bibdk_actions_manifestation_actions($manifestation){
-  dpm(func_get_args());
-  $actions['export'] = array(
-    '#theme' => 'links',
-    '#links' => bibdk_actions_refexport_links(),
-    '#weight' => 0,
-  );
-  return $actions;
+ function bibdk_actions_ting_openformat_actions($type, $entity, $view_mode, $langcode){
+  if ($type == 'bibdkManifestation'){
+    $actions['export'] = array(
+      '#theme' => 'links',
+      '#links' => bibdk_actions_refexport_links($entity->id),
+      '#weight' => 1,
+    );
+    return $actions;
+  }
 }
 
 /** link for cart actions hook
@@ -71,7 +72,7 @@ function bibdk_actions_refexport_links($pid = null, $attributes = array()){
   $links = array();
 
   foreach ($paths as $type => $path) {
-    $path = $path . url('export/cart', array('absolute' => true)) . $pid;
+    $path = $path . url('export/cart/', array('absolute' => true)) . $pid;
     $links[$type] = array(
       'title' => t('export_manifestation_' . $type, array(), array('context' => 'bibdk_actions')),
       'href' => $path,
