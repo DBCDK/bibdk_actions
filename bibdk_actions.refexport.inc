@@ -1,15 +1,52 @@
 <?php
 
+function bibdk_actions_bibdk_usersettings_user_tabs(){
+
+  $tab['export'] = array(
+    'title'  => t('Export'),
+    'weight' => 5,
+  );
+
+  return $tab;
+}
+
+function bibdk_actions_bibdk_usersettings_user_settings(){
+
+  $paths = array(
+    'direct' => '',
+    'refworks' => 'http://www.refworks.com/express/ExpressImport.asp?vendor=bibliotek.dk&filter=RefWorks Tagged Format&encoding=28591&url=',
+    'endnote' => 'http://www.myendnoteweb.com/EndNoteWeb.html?func=directExport& partnerName=bibliiotek.dk&dataIdentifier=1&dataRequestUrl='
+  );
+
+
+  foreach($paths as $key => $path){
+    $form['export']['bibdk_actions_' . $key] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable @type', array('@type' => t($key))),
+      '#default_value' => variable_get('bibdk_actions_' . $key, TRUE),
+    );
+  }
+
+  $form['export'] += array(
+    '#type' => 'container',
+    '#weight' => 5,
+    '#tab' => 'export',
+  );
+
+  return $form;
+}
+
+
 /** Page that will generate a file with reference information
  * @param $ids
  * @return null The proces is killed after the file has been echoed
  */
-function bibdk_actions_refexport_page($ids){
+function bibdk_actions_refexport_page($format, $ids){
   $pids = preg_replace('@;@', ',', $ids);
   $pids = explode(',', $pids);
 
   try{
-    bibdk_actions_refexport_file($pids);
+    bibdk_actions_refexport_file($pids, $format);
     $ids = explode(';', $ids);
     foreach($ids as $id){
       bibdk_cart_reservation_update_status('export_complete', $id);
@@ -64,15 +101,30 @@ function bibdk_actions_get_refexport_actions($actions) {
  */
 function bibdk_actions_refexport_links($pid = null, $attributes = array()){
   $paths = array(
-    'direct' => '',
-    'refworks' => 'http://www.refworks.com/express/ExpressImport.asp?vendor=bibliotek.dk&filter=RefWorks Tagged Format&encoding=28591&url=',
-    'endnote' => 'http://www.myendnoteweb.com/EndNoteWeb.html?func=directExport& partnerName=bibliiotek.dk&dataIdentifier=1&dataRequestUrl='
+    'direct' => array(
+      'path' => '',
+      'target' => '_self',
+      'format' => 'ris',
+    ),
+    'refworks' => array(
+      'path' => 'http://www.refworks.com/express/ExpressImport.asp?vendor=bibliotek.dk&filter=RefWorks Tagged Format&encoding=28591&url=',
+      'target' => '_blank',
+      'format' => 'refWorks',
+    ),
+    'endnote' => array(
+      'path' => 'http://www.myendnoteweb.com/EndNoteWeb.html?func=directExport& partnerName=bibliiotek.dk&dataIdentifier=1&dataRequestUrl=',
+      'target' => '_blank',
+      'format' => 'ris',
+    ),
   );
 
   $links = array();
 
-  foreach ($paths as $type => $path) {
-    $path = $path . url('export/cart/', array('absolute' => true)) . $pid;
+  foreach ($paths as $type => $value) {
+      $attributes['target'] = $value['target'];
+    /*if (!bibdk_usersettings_user_settings_get('bibdk_actions_' . $type, TRUE))
+      continue;*/
+    $path = $value['path']. url('export/cart/', array('absolute' => true)) . $value['format'] . '/' . $pid;
     $links[$type] = array(
       'title' => t('export_manifestation_' . $type, array(), array('context' => 'bibdk_actions')),
       'href' => $path,
