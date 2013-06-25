@@ -22,7 +22,7 @@ function bibdk_actions_bibdk_usersettings_user_settings(){
   $paths = array(
     'direct' => '',
     'refworks' => 'http://www.refworks.com/express/ExpressImport.asp?vendor=bibliotek.dk&filter=RefWorks Tagged Format&encoding=28591&url=',
-    'endnote' => 'http://www.myendnoteweb.com/EndNoteWeb.html?func=directExport& partnerName=bibliiotek.dk&dataIdentifier=1&dataRequestUrl='
+    'endnote' => 'http://www.myendnoteweb.com/EndNoteWeb.html?func=directExport&partnerName=bibliotek.dk&dataIdentifier=1&dataRequestUrl='
   );
 
 
@@ -120,7 +120,7 @@ function bibdk_actions_refexport_links($pid = null, $attributes = array()){
       'format' => 'refWorks',
     ),
     'endnote' => array(
-      'path' => 'http://www.myendnoteweb.com/EndNoteWeb.html?func=directExport& partnerName=bibliiotek.dk&dataIdentifier=1&dataRequestUrl=',
+      'path' => 'http://www.myendnoteweb.com/EndNoteWeb.html?func=directExport&partnerName=bibliotek.dk&dataIdentifier=1&dataRequestUrl=',
       'target' => '_blank',
       'format' => 'ris',
     ),

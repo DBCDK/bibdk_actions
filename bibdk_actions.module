@@ -15,7 +15,7 @@ function bibdk_actions_menu(){
     'access arguments' => array('access content'),
     'file' => 'bibdk_actions.print.inc',
   );
-  $items['export/cart/%format/%pid'] = array(
+  $items['export/cart/%/%'] = array(
     'title' => '',
     'page callback' => 'bibdk_actions_refexport_page',
     'page arguments' => array(2, 3),
