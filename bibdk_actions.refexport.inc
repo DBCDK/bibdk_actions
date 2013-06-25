@@ -1,15 +1,22 @@
 <?php
 
+/** Implements hook_bibdk_usersettings_user_tabs
+ * @return array
+ */
 function bibdk_actions_bibdk_usersettings_user_tabs(){
 
   $tab['export'] = array(
     'title'  => t('Export'),
+    'description' => t('tab_export_description'),
     'weight' => 5,
   );
 
   return $tab;
 }
 
+/** Implements hook_bibdk_usersettings_user_settings
+ * @return array
+ */
 function bibdk_actions_bibdk_usersettings_user_settings(){
 
   $paths = array(
@@ -23,7 +30,7 @@ function bibdk_actions_bibdk_usersettings_user_settings(){
     $form['export']['bibdk_actions_' . $key] = array(
       '#type' => 'checkbox',
       '#title' => t('Enable @type', array('@type' => t($key))),
-      '#default_value' => variable_get('bibdk_actions_' . $key, TRUE),
+      '#default_value' => bibdk_usersettings_user_settings_get('bibdk_actions_' . $key, TRUE),
     );
   }
 
@@ -69,6 +76,7 @@ function bibdk_actions_refexport_page($format, $ids){
       '#theme' => 'links',
       '#links' => bibdk_actions_refexport_links($entity->id),
       '#weight' => 1,
+      '#heading' => t('export links'),
     );
     return $actions;
   }
@@ -122,14 +130,14 @@ function bibdk_actions_refexport_links($pid = null, $attributes = array()){
 
   foreach ($paths as $type => $value) {
       $attributes['target'] = $value['target'];
-    /*if (!bibdk_usersettings_user_settings_get('bibdk_actions_' . $type, TRUE))
-      continue;*/
+    if (!bibdk_usersettings_user_settings_get('bibdk_actions_' . $type, TRUE))
+      continue;
     $path = $value['path']. url('export/cart/', array('absolute' => true)) . $value['format'] . '/' . $pid;
     $links[$type] = array(
       'title' => t('export_manifestation_' . $type, array(), array('context' => 'bibdk_actions')),
       'href' => $path,
       'attributes' => $attributes,
-      'html' => FALSE,
+      'html' => true,
     );
   }
 
