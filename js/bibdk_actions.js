@@ -34,6 +34,8 @@
 
                     if ($(this).hasClass('cart-popup'))
                         Drupal.cart_popup(href);
+                    else if ($(this).attr('target') == '_blank')
+                        window.open(href, '_blank');
                     else
                         window.location = href;
 
