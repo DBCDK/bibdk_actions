@@ -25,9 +25,17 @@
                     return this.value;
                 }).get();
                 if (checkedVals.length > 0) {
-                    var href = $(this).attr('href') + '/' + checkedVals.join(";");
+
+                    var href = $(this).attr('href');
+                    if (href.substr(href.length - 1) != '/'){
+                        href += '/';
+                    }
+                    href += checkedVals.join(";");
+
                     if ($(this).hasClass('cart-popup'))
                         Drupal.cart_popup(href);
+                    else if ($(this).attr('target') == '_blank')
+                        window.open(href, '_blank');
                     else
                         window.location = href;
 

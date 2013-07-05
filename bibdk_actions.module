@@ -15,12 +15,12 @@ function bibdk_actions_menu(){
     'access arguments' => array('access content'),
     'file' => 'bibdk_actions.print.inc',
   );
-  $items['export/cart/%'] = array(
+  $items['export/cart/%/%'] = array(
     'title' => '',
     'page callback' => 'bibdk_actions_refexport_page',
-    'page arguments' => array(2),
+    'page arguments' => array(2, 3),
     'access arguments' => array('access content'),
-    'file' => 'bibdk_actions.print.inc',
+    'file' => 'bibdk_actions.refexport.inc',
   );
   $items['email/cart/%'] = array(
     'title' => '',
