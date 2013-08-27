@@ -8,7 +8,7 @@ function bibdk_actions_bibdk_usersettings_user_tabs(){
   $tab['export'] = array(
     'title'  => t('Export'),
     'description' => t('tab_export_description'),
-    'weight' => 5,
+    'weight' => 1,
   );
 
   return $tab;
@@ -36,7 +36,7 @@ function bibdk_actions_bibdk_usersettings_user_settings(){
 
   $form['export'] += array(
     '#type' => 'container',
-    '#weight' => 5,
+    '#weight' => 0,
     '#tab' => 'export',
   );
 
