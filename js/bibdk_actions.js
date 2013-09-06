@@ -37,7 +37,7 @@
                     else if ($(this).attr('target') == '_blank')
                         window.open(href, '_blank');
                     else
-                        window.location = href;
+                        window.location = encodeURI(href);
 
                 }
             });
