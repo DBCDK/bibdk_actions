@@ -3,10 +3,10 @@
 /** Implements hook_bibdk_usersettings_user_tabs
  * @return array
  */
-function bibdk_actions_bibdk_usersettings_user_tabs(){
+function bibdk_actions_bibdk_usersettings_user_tabs() {
 
   $tab['export'] = array(
-    'title'  => t('Export'),
+    'title' => t('Export'),
     'description' => t('tab_export_description'),
     'weight' => 1,
   );
@@ -17,7 +17,7 @@ function bibdk_actions_bibdk_usersettings_user_tabs(){
 /** Implements hook_bibdk_usersettings_user_settings
  * @return array
  */
-function bibdk_actions_bibdk_usersettings_user_settings(){
+function bibdk_actions_bibdk_usersettings_user_settings() {
 
   $paths = array(
     'direct' => '',
@@ -26,7 +26,7 @@ function bibdk_actions_bibdk_usersettings_user_settings(){
   );
 
 
-  foreach($paths as $key => $path){
+  foreach ($paths as $key => $path) {
     $form['export']['bibdk_actions_' . $key] = array(
       '#type' => 'checkbox',
       '#title' => t('Enable @type', array('@type' => t($key))),
@@ -48,18 +48,19 @@ function bibdk_actions_bibdk_usersettings_user_settings(){
  * @param $ids
  * @return null The proces is killed after the file has been echoed
  */
-function bibdk_actions_refexport_page($format, $ids){
+function bibdk_actions_refexport_page($format, $ids) {
   $pids = preg_replace('@;@', ',', $ids);
   $pids = explode(',', $pids);
 
-  try{
+  try {
     bibdk_actions_refexport_file($pids, $format);
     $ids = explode(';', $ids);
-    foreach($ids as $id){
+    foreach ($ids as $id) {
       bibdk_cart_reservation_update_status('export_complete', $id);
     }
     die();
-  } catch (Exception $e){
+  }
+  catch (Exception $e) {
     drupal_set_message(t('export_cannot_be_generated'), 'error');
   }
 
@@ -70,8 +71,8 @@ function bibdk_actions_refexport_page($format, $ids){
  * Implements hook_ting_openformat_actions
  */
 
- function bibdk_actions_ting_openformat_actions($type, $entity, $view_mode, $langcode){
-  if ($type == 'bibdkManifestation'){
+function bibdk_actions_ting_openformat_actions($type, $entity, $view_mode, $langcode) {
+  if ($type == 'bibdkManifestation') {
     $actions['export'] = array(
       '#theme' => 'links',
       '#links' => bibdk_actions_refexport_links($entity->id),
@@ -90,13 +91,14 @@ function bibdk_actions_get_refexport_actions($actions) {
 
   $attributes = array(
     'class' => array(
-      'cart-action-btn', 'inactive'
+      'cart-action-btn',
+      'inactive'
     ),
   );
 
   $actions['export'] = array(
     '#theme' => 'links',
-    '#links' => bibdk_actions_refexport_links(null, $attributes),
+    '#links' => bibdk_actions_refexport_links(NULL, $attributes),
     '#weight' => 0,
   );
 
@@ -104,10 +106,14 @@ function bibdk_actions_get_refexport_actions($actions) {
 }
 
 
-/** Return links for export of manifestations
+/**
+ * Return links for export of manifestations
+ *
+ * @param null $pid
+ * @param array $attributes
  * @return array
  */
-function bibdk_actions_refexport_links($pid = null, $attributes = array()){
+function bibdk_actions_refexport_links($pid = NULL, $attributes = array()) {
   $paths = array(
     'direct' => array(
       'path' => '',
@@ -129,15 +135,22 @@ function bibdk_actions_refexport_links($pid = null, $attributes = array()){
   $links = array();
 
   foreach ($paths as $type => $value) {
-      $attributes['target'] = $value['target'];
-    if (!bibdk_usersettings_user_settings_get('bibdk_actions_' . $type, TRUE))
+    $attributes['target'] = $value['target'];
+    if (!bibdk_usersettings_user_settings_get('bibdk_actions_' . $type, TRUE)) {
       continue;
-    $path = $value['path']. url('export/cart/', array('absolute' => true)) . $value['format'] . '/' . $pid;
+    }
+
+    $callbackUrl = url('export/cart/', array('absolute' => TRUE)) . $value['format'] . '/' . $pid;
+    if (strpos($callbackUrl, 'https') === 0) {
+      $callbackUrl = substr_replace($callbackUrl, 'http', 0, 5);
+    }
+    $path = $value['path'] . $callbackUrl;
+
     $links[$type] = array(
       'title' => t('export_manifestation_' . $type, array(), array('context' => 'bibdk_actions')),
       'href' => $path,
       'attributes' => $attributes,
-      'html' => true,
+      'html' => TRUE,
     );
   }
 
@@ -149,15 +162,15 @@ function bibdk_actions_refexport_links($pid = null, $attributes = array()){
  * @param $ids
  * @param string $format
  */
-function bibdk_actions_refexport_file($ids, $format = 'ris'){
+function bibdk_actions_refexport_file($ids, $format = 'ris') {
 
   $ris = _bibdk_actions_refexport_get_manifestations_from_webservice($ids, $format);
   $result = _bibdk_actions_refexport_convert_result_to_ref_format($ris, $format);
 
-  $filename = 'bibdk_'.date('Ymd_His').'.'.$format;
+  $filename = 'bibdk_' . date('Ymd_His') . '.' . $format;
 
   drupal_add_http_header('Content-Type', 'application/x-endnote-refer; charset=utf-8');
-  drupal_add_http_header('Content-Disposition', 'attachment; filename='.$filename);
+  drupal_add_http_header('Content-Disposition', 'attachment; filename=' . $filename);
 
   echo $result;
 }
@@ -166,7 +179,7 @@ function bibdk_actions_refexport_file($ids, $format = 'ris'){
  * @param $ids
  * @return xml
  */
-function _bibdk_actions_refexport_get_manifestations_from_webservice($ids, $objectFormat){
+function _bibdk_actions_refexport_get_manifestations_from_webservice($ids, $objectFormat) {
   $params = array(
     'objectFormat' => $objectFormat,
     'objectId' => $ids,
@@ -183,7 +196,7 @@ function _bibdk_actions_refexport_get_manifestations_from_webservice($ids, $obje
  * @param $result xml
  * @return array
  */
-function _bibdk_actions_refexport_convert_result_to_ref_format($result, $format){
+function _bibdk_actions_refexport_convert_result_to_ref_format($result, $format) {
   $dom = new DomDocument();
 
   if (!@$dom->loadXML($result)) {
@@ -192,7 +205,7 @@ function _bibdk_actions_refexport_convert_result_to_ref_format($result, $format)
   $xpath = new DomXPATH($dom);
   $xpath->registerNamespace('ns', 'http://oss.dbc.dk/ns/opensearch');
 
-  $nodelist = $xpath->query('//ns:'.$format);
+  $nodelist = $xpath->query('//ns:' . $format);
   $ref_nodes = array();
   foreach ($nodelist as $node) {
     $ref_nodes[] = $node->nodeValue;
