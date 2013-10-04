@@ -106,7 +106,11 @@ function bibdk_actions_get_refexport_actions($actions) {
 }
 
 
-/** Return links for export of manifestations
+/**
+ * Return links for export of manifestations
+ *
+ * @param null $pid
+ * @param array $attributes
  * @return array
  */
 function bibdk_actions_refexport_links($pid = NULL, $attributes = array()) {
@@ -135,7 +139,13 @@ function bibdk_actions_refexport_links($pid = NULL, $attributes = array()) {
     if (!bibdk_usersettings_user_settings_get('bibdk_actions_' . $type, TRUE)) {
       continue;
     }
-    $path = $value['path'] . url('export/cart/', array('absolute' => TRUE)) . $value['format'] . '/' . $pid;
+
+    $callbackUrl = url('export/cart/', array('absolute' => TRUE)) . $value['format'] . '/' . $pid;
+    if (strpos($callbackUrl, 'https') === 0) {
+      $callbackUrl = substr_replace($callbackUrl, 'http', 0, 5);
+    }
+    $path = $value['path'] . $callbackUrl;
+
     $links[$type] = array(
       'title' => t('export_manifestation_' . $type, array(), array('context' => 'bibdk_actions')),
       'href' => $path,
