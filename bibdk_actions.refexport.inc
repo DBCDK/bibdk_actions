@@ -73,12 +73,25 @@ function bibdk_actions_refexport_page($format, $ids) {
 
 function bibdk_actions_ting_openformat_actions($type, $entity, $view_mode, $langcode) {
   if ($type == 'bibdkManifestation') {
-    $actions['export'] = array(
+    
+    $refexport_links = bibdk_actions_refexport_links($entity->id);
+    if (count($refexport_links)== 0 ) {
+      // Nothing to display
+      return $refexport_links;
+    }
+      
+    $links = array(
       '#theme' => 'links',
-      '#links' => bibdk_actions_refexport_links($entity->id),
+      '#links' =>$refexport_links,
       '#weight' => 1,
       '#heading' => t('export links'),
     );
+
+    $actions['export'] = array(
+      '#theme' => 'bibdk_actions_refexport',
+      '#linktext' => $links,
+    );
+
     return $actions;
   }
 }

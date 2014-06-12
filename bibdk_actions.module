@@ -126,6 +126,15 @@ function bibdk_actions_theme($existing, $type, $theme, $path) {
       'variables' => array(
         'strings' => array(),
       ),
+    ),
+    'bibdk_actions_refexport' => array(
+      'template' => 'bibdk-actions-refexport',
+      'path' => $path,
+      'variables' => array(
+        'linktext' => array(),
+      ),
     )
+    
+    
   );
 }
