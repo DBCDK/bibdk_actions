@@ -216,7 +216,7 @@ function _bibdk_actions_refexport_convert_result_to_ref_format($result, $format)
     throw new Exception();
   }
   $xpath = new DomXPATH($dom);
-  $xpath->registerNamespace('ns', 'http://oss.dbc.dk/ns/opensearch');
+  $xpath->registerNamespace('ns', 'http://oss.dbc.dk/ns/openformat');
 
   $nodelist = $xpath->query('//ns:' . $format);
   $ref_nodes = array();
