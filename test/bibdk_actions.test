@@ -15,7 +15,6 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
   }
 
   public function setUp() {
-    $this->profile = 'minimal';
     parent::setUp('bibdk_cart', 'bibdk_actions', 'ting_openformat', 'field_ui', 'bibdk_provider', 'bibdk_webservice');
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
@@ -29,7 +28,7 @@ class BibdkActionsWebTestCase extends DrupalWebTestCase {
     // $this->_testActionFunctions();
     // $this->_testEmailFunctions();
     // $this->_testEmailview();
-    // $this->_testExportFunctions();
+    $this->_testExportFunctions();
     // $this->_testExportView();
   }
 
@@ -103,26 +102,6 @@ TY  - BOOKA1  - Hvass,HansA1  - Eigener,WilhelmT1  - Fische der WeltSP  - 158 S.
       $result = $e;
     }
     $this->assertEqual(get_class($result), 'Exception', t('empty xml throws an Exception'));
-
-
-
-    $xml = _bibdk_actions_refexport_get_manifestations_from_webservice(array('870970-basis:29225605'), 'ris');
-    $result = _bibdk_actions_refexport_convert_result_to_ref_format($xml, 'ris');
-    $expected_result = 'TY  - MPCT
-T1  - Headhunterne
-SP  - 1 blu-ray disc (blu-ray) (101 min.)
-PB  - Nordisk Film
-CY  - Valby
-Y1  - 2012
-SN  - BLURAY DISC 2077831
-N1  - Roger Brown er succesfuld headhunter, der supplerer sin indtægt med kunsttyverier for at bevare sit overdådige luksusliv med kæresten Diana. Da han stjæler kandidaten Clas Greves Rubens-maleri bliver det starten på en labyrintisk duel på liv og død mellem de to
-KW  - krimi
-KW  - actionfilm
-KW  - kunsttyveri
-KW  - headhunting
-KW  - Norge
-ER  -';
-    $this->assertEqual($expected_result, $result, t('call to webservice correctly converted into textfile'));
   }
 
   private function _testBibdkCartHook() {
