@@ -3,7 +3,7 @@
         <hitCount>2</hitCount>
         <collectionCount>1</collectionCount>
         <more>false</more>
-        <of:searchResult>
+        <searchResult>
             <collection>
                 <resultPosition>1</resultPosition>
                 <numberOfObjects>1</numberOfObjects>
@@ -17,10 +17,10 @@
                 </object>
             </collection>
             <formattedCollection>
-                <ris>TY  - BOOKA1  - Welle-Strand,EdvardT1  - Hvor fisk vaker og fugl flyrSP  - 157 s.CY  - TrondheimY1  - T3  - Bruns jeger og fiskerbibliotekER  -</ris>
+                <of:ris>TY  - BOOKA1  - Welle-Strand,EdvardT1  - Hvor fisk vaker og fugl flyrSP  - 157 s.CY  - TrondheimY1  - T3  - Bruns jeger og fiskerbibliotekER  -</of:ris>
             </formattedCollection>
-        </of:searchResult>
-        <of:searchResult>
+        </searchResult>
+        <searchResult>
             <collection>
                 <resultPosition>2</resultPosition>
                 <numberOfObjects>1</numberOfObjects>
@@ -34,9 +34,9 @@
                 </object>
             </collection>
             <formattedCollection>
-                <ris>TY  - BOOKA1  - Hvass,HansA1  - Eigener,WilhelmT1  - Fische der WeltSP  - 158 S., Zahlr. illustreret (farb.)PB  - Gebrüder WeissCY  - Berlin-SchönebergY1  - ER  -</ris>
+                <of:ris>TY  - BOOKA1  - Hvass,HansA1  - Eigener,WilhelmT1  - Fische der WeltSP  - 158 S., Zahlr. illustreret (farb.)PB  - Gebrüder WeissCY  - Berlin-SchönebergY1  - ER  -</of:ris>
             </formattedCollection>
-        </of:searchResult>
+        </searchResult>
         <facetResult/>
         <time>0.123278</time>
     </result>
