@@ -83,13 +83,13 @@ function bibdk_actions_ting_openformat_actions($type, $entity, $view_mode, $lang
     $links = array(
       '#theme' => 'links',
       '#links' =>$refexport_links,
-      '#weight' => 1,
       '#heading' => t('export links'),
     );
 
     $actions['export'] = array(
       '#theme' => 'bibdk_actions_refexport',
       '#linktext' => $links,
+      '#weight' => 0.5,
     );
 
     return $actions;
