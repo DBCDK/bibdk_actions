@@ -1,7 +1,7 @@
 name = Bibliotek.dk - Actions
 description = Module providing action for emailing & printing specific items on Bibliotek.dk
 core = 7.x
-version = 7.x-0.12
+version = 7.x-0.13
 package = Bibliotek.dk
 
 configure = admin/config/system/site-information/actions
