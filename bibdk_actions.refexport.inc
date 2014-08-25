@@ -201,7 +201,7 @@ function _bibdk_actions_refexport_get_manifestations_from_webservice($ids, $obje
 
   $client = new ting_client_class();
 
-  return $client->do_get_object($params);
+  return $client->do_request('object',$params);
 
 }
 
